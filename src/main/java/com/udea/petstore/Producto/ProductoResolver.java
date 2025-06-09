@@ -5,6 +5,7 @@ import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 public class ProductoResolver {
@@ -25,21 +26,28 @@ public class ProductoResolver {
                 .orElseThrow(() -> new RuntimeException("producto no encontrada"));
     }
 
-    public record ProductoInput(String nombre, String descripcion, String categoria, Float precio, Boolean estado){}
+    public record ProductoInput(String nombre, String descripcion, String categoria, Float precio,Long cantidadDisponible){}
 
     @MutationMapping(name = "insertarProducto")
     public Producto insertarProducto(@Argument ProductoInput productoInput) {
+        if(Objects.equals(productoInput.nombre, "") ||productoInput.nombre==null||productoInput.descripcion==""||productoInput.descripcion==null||productoInput.categoria==""||productoInput.categoria==null||productoInput.precio==0||productoInput.cantidadDisponible==0){
+            throw new RuntimeException("No puede ser vacio");
+        }
         Producto producto = new Producto();
         producto.setNombre(productoInput.nombre);
         producto.setDescripcion(productoInput.descripcion);
         producto.setCategoria(productoInput.categoria);
+        producto.setCantidadDisponible(productoInput.cantidadDisponible);
         producto.setprecio(productoInput.precio);
-        producto.setEstado(productoInput.estado);
         return productoRepository.save(producto);
     }
 
+
     @MutationMapping
     public Boolean deleteProducto(@Argument Long id) {
+        if (!productoRepository.existsById(id)) {
+            throw new RuntimeException("Producto no encontrado");
+        }
         productoRepository.deleteById(id);
         return true;
     }
@@ -47,11 +55,14 @@ public class ProductoResolver {
     @MutationMapping
     public Producto updateProducto(@Argument Long id, @Argument ProductoInput productoInput) {
         Producto producto = productoRepository.findById(id).orElseThrow(() -> new RuntimeException("Venta no encontrada"));
+        if(Objects.equals(productoInput.nombre, "") ||productoInput.nombre==null||productoInput.descripcion==""||productoInput.descripcion==null||productoInput.categoria==""||productoInput.categoria==null||productoInput.precio==0||productoInput.cantidadDisponible==0){
+            throw new RuntimeException("No puede ser vacio");
+        }
         producto.setNombre(productoInput.nombre());
         producto.setDescripcion(productoInput.descripcion());
         producto.setCategoria(productoInput.categoria());
         producto.setprecio(productoInput.precio());
-        producto.setEstado(productoInput.estado());
+        producto.setCantidadDisponible(productoInput.cantidadDisponible());
         return productoRepository.save(producto);
     }
 

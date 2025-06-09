@@ -1,4 +1,5 @@
 package com.udea.petstore.Producto;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -11,16 +12,16 @@ public class Producto {
     private String descripcion;
     private String categoria ;
     private Float precio;
-    private Boolean estado;
+    private Long cantidadDisponible;
 
     public Producto() {}
 
-    public Producto(String nombre, String descripcion, String categoria, Float precio, Boolean estado) {
+    public Producto(String nombre, String descripcion, String categoria, Float precio,Long cantidadDisponible ) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.categoria = categoria;
         this.precio = precio;
-        this.estado = estado;
+        this.cantidadDisponible = cantidadDisponible;
     }
 
     public Long getId() {
@@ -63,12 +64,12 @@ public class Producto {
         this.precio = precio;
     }
 
-    public Boolean getEstado() {
-        return estado;
+    public Long getCantidadDisponible() {
+        return cantidadDisponible;
     }
 
-    public void setEstado(Boolean estado) {
-        this.estado = estado;
+    public void setCantidadDisponible(Long cantidadDisponible) {
+        this.cantidadDisponible = cantidadDisponible;
     }
 
     @Override
@@ -79,7 +80,7 @@ public class Producto {
                 ", descripcion='" + descripcion + '\'' +
                 ", categoria='" + categoria + '\'' +
                 ", precio=" + precio +
-                ", estado=" + estado +
+                ", cantidadDisponible=" + cantidadDisponible +
                 '}';
     }
 }

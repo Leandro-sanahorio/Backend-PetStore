@@ -4,7 +4,7 @@ type Producto{
     descripcion:String!
     categoria:String!
     precio:Float!
-    estado:Boolean!
+    cantidadDisponible:Int!
 }
 
 input ProductoInput{
@@ -12,5 +12,5 @@ input ProductoInput{
     descripcion:String!
     categoria:String!
     precio:Float!
-    estado:Boolean!
+    cantidadDisponible:Int!
 }

@@ -52,7 +52,7 @@ public class UsuarioResolver {
     public Usuario updateUsuario(@Argument Long id, @Argument UsuarioInput usuarioInput) {
         Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> new RuntimeException("Venta no encontrada"));
         // Encriptar la contraseña antes de guardar
-        usuario.setContrasenia(passwordEncryptor.encrypt(usuarioInput.contrasenia()));
+                usuario.setContrasenia(passwordEncryptor.encrypt(usuarioInput.contrasenia()));
         usuario.setNombreusuario(usuarioInput.nombreusuario());
         return usuarioRepository.save(usuario);
     }
