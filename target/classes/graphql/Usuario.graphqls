@@ -2,9 +2,12 @@ type Usuario{
     id:ID!
     contrasenia:String!
     nombreusuario:String!
+    rol: Rol!
 }
 
 input UsuarioInput{
     contrasenia:String!
     nombreusuario:String!
+    rol: Int!
 }
+

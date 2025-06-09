@@ -1,0 +1,4 @@
+type Rol {
+    id: ID!
+    nombre: String!
+}

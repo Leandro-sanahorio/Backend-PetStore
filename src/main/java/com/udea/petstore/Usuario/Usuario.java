@@ -1,4 +1,5 @@
 package com.udea.petstore.Usuario;
+import com.udea.petstore.Rol.Rol;
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,12 +16,26 @@ public class Usuario {
 
     private String contrasenia;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "rol_id", nullable = false)
+    private Rol rol;
+
     public Usuario() {
     }
 
-    public Usuario(String contrasenia, String nombreusuario) {
+    public Usuario(Long id, Rol rol, String contrasenia, String nombreusuario) {
+        this.id = id;
+        this.rol = rol;
         this.contrasenia = contrasenia;
         this.nombreusuario = nombreusuario;
+    }
+
+    public Rol getRol() {
+        return rol;
+    }
+
+    public void setRol(Rol rol) {
+        this.rol = rol;
     }
 
     public String getContrasenia() {
@@ -53,6 +68,7 @@ public class Usuario {
                 "id=" + id +
                 ", nombreusuario='" + nombreusuario + '\'' +
                 ", contrasenia='" + contrasenia + '\'' +
+                ", rol=" + rol +
                 '}';
     }
 }
