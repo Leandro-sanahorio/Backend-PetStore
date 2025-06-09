@@ -1,0 +1,17 @@
+type Venta{
+    id:ID!
+    usuario : String!
+    total : Float!
+    mediopago : String!
+    ventaespecial:Boolean!
+    cantidadProductosVenta:Int!
+}
+
+input VentaInput{
+    usuario : String!
+    total : Float!
+    mediopago : String!
+    ventaespecial:Boolean!
+    cantidadProductosVenta:Int!
+}
+

@@ -1,0 +1,10 @@
+type Usuario{
+    id:ID!
+    contrasenia:String!
+    nombreusuario:String!
+}
+
+input UsuarioInput{
+    contrasenia:String!
+    nombreusuario:String!
+}

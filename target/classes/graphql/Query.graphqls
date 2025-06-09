@@ -1,0 +1,35 @@
+type Query{
+    productos(Producto: ProductoInput):[Producto]!
+    producto(id: ID!):Producto
+    compras(Compra: CompraInput):[Compra]!
+    compra(id: ID!):Compra
+    ventas(Venta: VentaInput):[Venta]!
+    venta(id: ID!):Venta
+    usuarios(Usuario: UsuarioInput):[Usuario]!
+    usuario(id: ID!):Usuario
+}
+
+type Mutation{
+
+    insertarVenta(ventaInput: VentaInput!): Venta!
+    insertarCompra(compraInput: CompraInput!): Compra!
+    insertarProducto(productoInput:ProductoInput!): Producto!
+    insertarUsuario(usuarioInput:UsuarioInput!):Usuario!
+
+    deleteVenta(id: ID!): Boolean!
+    deleteCompra(id: ID!): Boolean!
+    deleteProducto(id: ID!): Boolean!
+    deleteUsuario(id: ID!): Boolean!
+
+
+    updateVenta(id: ID!, ventaInput: VentaInput!): Venta!
+    updateCompra(id: ID!, compraInput: CompraInput!): Compra!
+    updateProducto(id: ID!, productoInput: ProductoInput!): Producto!
+    updateUsuario(id: ID!, usuarioInput: UsuarioInput!): Usuario!
+
+    loginUsuario(nombreusuario: String!, contrasenia: String!): Boolean
+}
+
+
+
+
