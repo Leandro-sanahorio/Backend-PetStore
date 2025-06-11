@@ -1,11 +1,11 @@
 type Query{
-    productos(Producto: ProductoInput):[Producto]!
+    productos: [Producto!]!
     producto(id: ID!):Producto
-    compras(Compra: CompraInput):[Compra]!
+    compras: [Compra!]!
     compra(id: ID!):Compra
-    ventas(Venta: VentaInput):[Venta]!
+    ventas:[Venta!]!
     venta(id: ID!):Venta
-    usuarios(Usuario: UsuarioInput):[Usuario]!
+    usuarios:[Usuario!]!
     usuario(id: ID!):Usuario
 }
 
@@ -27,7 +27,7 @@ type Mutation{
     updateProducto(id: ID!, productoInput: ProductoInput!): Producto!
     updateUsuario(id: ID!, usuarioInput: UsuarioInput!): Usuario!
 
-    loginUsuario(nombreusuario: String!, contrasenia: String!): Boolean
+    loginUsuario(nombreusuario: String!, contrasenia: String!): String!
 }
 
 
