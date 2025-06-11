@@ -23,7 +23,7 @@ public class ProductoResolver {
     }
 
     @QueryMapping
-    @PreAuthorize("hasAnyRole('QUESO' )")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USUARIO')")
     public Producto producto(@Argument Long id) {
         return productoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("producto no encontrada"));
@@ -32,6 +32,7 @@ public class ProductoResolver {
     public record ProductoInput(String nombre, String descripcion, String categoria, Float precio,Long cantidadDisponible){}
 
     @MutationMapping(name = "insertarProducto")
+    @PreAuthorize("hasRole('ADMIN')")
     public Producto insertarProducto(@Argument ProductoInput productoInput) {
         if(Objects.equals(productoInput.nombre, "") ||productoInput.nombre==null||productoInput.descripcion==""||productoInput.descripcion==null||productoInput.categoria==""||productoInput.categoria==null||productoInput.precio==0||productoInput.cantidadDisponible==0){
             throw new RuntimeException("No puede ser vacio");
@@ -47,6 +48,7 @@ public class ProductoResolver {
 
 
     @MutationMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public Boolean deleteProducto(@Argument Long id) {
         if (!productoRepository.existsById(id)) {
             throw new RuntimeException("Producto no encontrado");
@@ -56,6 +58,7 @@ public class ProductoResolver {
     }
 
     @MutationMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public Producto updateProducto(@Argument Long id, @Argument ProductoInput productoInput) {
         Producto producto = productoRepository.findById(id).orElseThrow(() -> new RuntimeException("Venta no encontrada"));
         if(Objects.equals(productoInput.nombre, "") ||productoInput.nombre==null||productoInput.descripcion==""||productoInput.descripcion==null||productoInput.categoria==""||productoInput.categoria==null||productoInput.precio==0||productoInput.cantidadDisponible==0){
