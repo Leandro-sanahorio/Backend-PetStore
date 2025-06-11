@@ -23,14 +23,9 @@ public class JwtUtil {
 
     // 🔐 Generar un JWT con username y rol
     public String generateToken(String username, Rol rol) {
-        Map<String, Object> rolMap = new HashMap<>();
-        rolMap.put("id", rol.getId());
-        rolMap.put("nombre", rol.getNombre());
-
         return Jwts.builder()
                 .setSubject(username)
-                .claim("rol", rolMap)
-                .claim("authorities", "ROLE_" + rol.getNombre().toUpperCase()) // <- clave para Spring Security
+                .claim("role", rol.getNombre())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(getKey(), SignatureAlgorithm.HS256)
@@ -58,12 +53,8 @@ public class JwtUtil {
     }
 
     // 🎭 Extraer el rol del usuario
-    public Rol extractRole(String token) {
-        Map<String, Object> rolMap = extractClaim(token, claims -> claims.get("role", Map.class));
-        if (rolMap == null) return null;
-        Integer id = ((Number) rolMap.get("id")).intValue();
-        String nombre = (String) rolMap.get("nombre");
-        return new Rol(id, nombre);
+    public String extractRole(String token) {
+        return extractClaim(token, claims -> claims.get("role", String.class));
     }
 
     // ✅ Validar si el token es correcto y no expiró
