@@ -2,6 +2,7 @@ package com.udea.petstore.Producto;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -16,11 +17,13 @@ public class ProductoResolver {
     }
 
     @QueryMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'USUARIO')")
     public List<Producto> productos() {
         return productoRepository.findAll();
     }
 
     @QueryMapping
+    @PreAuthorize("hasAnyRole('QUESO' )")
     public Producto producto(@Argument Long id) {
         return productoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("producto no encontrada"));

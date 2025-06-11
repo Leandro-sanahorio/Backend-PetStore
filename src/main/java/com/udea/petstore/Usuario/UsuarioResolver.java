@@ -1,6 +1,7 @@
 package com.udea.petstore.Usuario;
 
 
+import com.udea.petstore.Auth.Config.JwtUtil;
 import com.udea.petstore.Rol.Rol;
 import com.udea.petstore.Rol.RolRepository;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -17,11 +18,13 @@ public class UsuarioResolver {
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncryptor passwordEncryptor;
     private final RolRepository rolRepository;
+    private final JwtUtil jwtUtil;
 
-    public UsuarioResolver(UsuarioRepository usuarioRepository, PasswordEncryptor passwordEncryptor, RolRepository rolRepository) {
+    public UsuarioResolver(UsuarioRepository usuarioRepository, PasswordEncryptor passwordEncryptor, RolRepository rolRepository,JwtUtil jwtUtil) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncryptor = passwordEncryptor;
         this.rolRepository = rolRepository;
+        this.jwtUtil = jwtUtil;
     }
 
     @QueryMapping
@@ -62,18 +65,15 @@ public class UsuarioResolver {
         return usuarioRepository.save(usuario);
     }
 
-    public boolean validarLogin(String nombreusuario, String contrasenia) {
-        Usuario usuario = usuarioRepository.findByNombreusuario(nombreusuario).orElse(null);
-        if (usuario == null) return false;
-        try{
-            return passwordEncryptor.matches(contrasenia, usuario.getContrasenia());
-        }catch (Exception e) {
-            return false;}
-    }
-
     @MutationMapping(name = "loginUsuario")
-    public Boolean login(@Argument String nombreusuario, @Argument String contrasenia) {
-        return validarLogin(nombreusuario, contrasenia);
+    public String loginUsuario(@Argument String nombreusuario, @Argument String contrasenia) {
+        Usuario usuario = usuarioRepository.findByNombreusuario(nombreusuario).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        if (!passwordEncryptor.matches(contrasenia, usuario.getContrasenia())) {
+            throw new RuntimeException("Contraseña incorrecta");
+        }
+
+        return jwtUtil.generateToken(usuario.getNombreusuario(), usuario.getRol());
     }
 
 
