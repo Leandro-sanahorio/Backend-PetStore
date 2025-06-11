@@ -129,9 +129,12 @@ public class VentaResolver {
     @MutationMapping
     @PreAuthorize("hasRole('ADMIN')")
     public Boolean deleteVenta(@Argument Long id) {
-        if (!ventaRepository.existsById(id)) {
-            throw new RuntimeException("Producto no encontrado");
-        }
+        Venta venta = ventaRepository.findById(id).orElseThrow(() -> new RuntimeException("Venta no encontrada"));
+        Producto producto = venta.getProducto();
+        int cantidad = venta.getCantidadProductosVenta();
+        producto.setCantidadDisponible(producto.getCantidadDisponible() + cantidad);
+        producto.setProductoVendidos(producto.getProductoVendidos() - cantidad);
+        productoRepository.save(producto);
         ventaRepository.deleteById(id);
         return true;
     }

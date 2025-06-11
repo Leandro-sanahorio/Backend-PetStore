@@ -5,6 +5,7 @@ type Venta{
     ventaespecial:Boolean!
     cantidadProductosVenta:Int!
     fechaCreacion: String!
+    producto: Producto!
 }
 
 input VentaInput{

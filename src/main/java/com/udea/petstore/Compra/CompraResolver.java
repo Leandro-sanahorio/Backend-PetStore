@@ -72,9 +72,11 @@ public class CompraResolver {
     @MutationMapping
     @PreAuthorize("hasRole('ADMIN')")
     public Boolean deleteCompra(@Argument Long id) {
-        if (!compraRepository.existsById(id)) {
-            throw new RuntimeException("Producto no encontrado");
-        }
+        Compra compra = compraRepository.findById(id).orElseThrow(() -> new RuntimeException("Compra no encontrada"));
+        Producto producto = compra.getProducto();
+        int cantidad = compra.getCantidadProductosCompra();
+        producto.setCantidadDisponible(producto.getCantidadDisponible() - cantidad);
+        productoRepository.save(producto);
         compraRepository.deleteById(id);
         return true;
     }
