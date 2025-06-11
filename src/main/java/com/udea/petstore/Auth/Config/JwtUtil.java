@@ -30,6 +30,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .setSubject(username)
                 .claim("rol", rolMap)
+                .claim("authorities", "ROLE_" + rol.getNombre().toUpperCase()) // <- clave para Spring Security
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(getKey(), SignatureAlgorithm.HS256)
