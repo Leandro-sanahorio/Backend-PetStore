@@ -3,6 +3,9 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+
+import java.time.LocalDateTime;
+
 @Entity
 public class Producto {
     @Id
@@ -13,15 +16,26 @@ public class Producto {
     private String categoria ;
     private Float precio;
     private Long cantidadDisponible;
+    @Column(name = "productoVendidos")
+    private Integer productoVendidos;
 
     public Producto() {}
 
-    public Producto(String nombre, String descripcion, String categoria, Float precio,Long cantidadDisponible ) {
+    public Producto(String nombre, String descripcion, String categoria, Float precio,Long cantidadDisponible, Integer productoVendidos) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.categoria = categoria;
         this.precio = precio;
         this.cantidadDisponible = cantidadDisponible;
+        this.productoVendidos = productoVendidos;
+    }
+
+    public Integer getProductoVendidos() {
+        return productoVendidos;
+    }
+
+    public void setProductoVendidos(Integer productoVendidos) {
+        this.productoVendidos = productoVendidos;
     }
 
     public Long getId() {

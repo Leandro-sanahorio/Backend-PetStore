@@ -4,26 +4,50 @@ import com.udea.petstore.Producto.Producto;
 import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.time.LocalDateTime;
+
 @Entity
 public class Venta {
+
     @Id
     @GeneratedValue
     private Long id;
     private String usuario;
     private Double total;
-    private String mediopago;
     private Boolean ventaespecial = false;
     private int cantidadproductosventa;
+    @Column(name = "fecha_creacion")
+    private LocalDateTime fechaCreacion;
+
+    @ManyToOne
+    @JoinColumn(name = "producto_id", nullable = false)
+    private Producto producto;
 
     public Venta() {
     }
 
-    public Venta(String usuario, Double total, String mediopago, Boolean ventaespecial, int cantidadproductosventa) {
+    public Venta(String usuario, Double total,Boolean ventaespecial, int cantidadproductosventa, LocalDateTime fechaCreacion, Producto producto) {
         this.usuario = usuario;
         this.total = total;
-        this.mediopago = mediopago;
         this.ventaespecial = ventaespecial;
         this.cantidadproductosventa = cantidadproductosventa;
+        this.fechaCreacion = fechaCreacion;
+        this.producto = producto;
+    }
+
+    public Producto getProducto() {
+        return producto;
+    }
+    public void setProducto(Producto producto) {
+        this.producto = producto;
+    }
+
+    public LocalDateTime getFechaCreacion() {
+        return fechaCreacion;
+    }
+
+    public void setFechaCreacion(LocalDateTime fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
     }
 
     public Long getId() {
@@ -40,14 +64,6 @@ public class Venta {
 
     public void setVentaespecial(Boolean ventaespecial) {
         this.ventaespecial = ventaespecial;
-    }
-
-    public String getMediopago() {
-        return mediopago;
-    }
-
-    public void setMediopago(String mediopago) {
-        this.mediopago = mediopago;
     }
 
     public Double getTotal() {
@@ -75,11 +91,12 @@ public class Venta {
     @Override
     public String toString() {
         return "Venta{" +
-                "usuario='" + usuario + '\'' +
+                "id=" + id +
+                ", usuario='" + usuario + '\'' +
                 ", total=" + total +
-                ", mediopago='" + mediopago + '\'' +
-                ", cantidadProductosVenta='" + cantidadproductosventa + '\'' +
                 ", ventaespecial=" + ventaespecial +
+                ", cantidadproductosventa=" + cantidadproductosventa +
+                ", fechaCreacion=" + fechaCreacion +
                 '}';
     }
 }

@@ -29,7 +29,13 @@ public class ProductoResolver {
                 .orElseThrow(() -> new RuntimeException("producto no encontrada"));
     }
 
-    public record ProductoInput(String nombre, String descripcion, String categoria, Float precio,Long cantidadDisponible){}
+    @QueryMapping(name = "topProductoMasVendidos")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USUARIO')")
+    public List<Producto> getTopProductoMasVendidos() {
+        return productoRepository.findTop5ByOrderByProductoVendidosDesc();
+    }
+
+    public record ProductoInput(String nombre, String descripcion, String categoria, Float precio,Long cantidadDisponible,Integer productoVendidos){}
 
     @MutationMapping(name = "insertarProducto")
     @PreAuthorize("hasRole('ADMIN')")
@@ -41,6 +47,7 @@ public class ProductoResolver {
         producto.setNombre(productoInput.nombre);
         producto.setDescripcion(productoInput.descripcion);
         producto.setCategoria(productoInput.categoria);
+        producto.setProductoVendidos(0);
         producto.setCantidadDisponible(productoInput.cantidadDisponible);
         producto.setprecio(productoInput.precio);
         return productoRepository.save(producto);
@@ -61,12 +68,14 @@ public class ProductoResolver {
     @PreAuthorize("hasRole('ADMIN')")
     public Producto updateProducto(@Argument Long id, @Argument ProductoInput productoInput) {
         Producto producto = productoRepository.findById(id).orElseThrow(() -> new RuntimeException("Venta no encontrada"));
+        int productosVendidosActuales = producto.getProductoVendidos();
         if(Objects.equals(productoInput.nombre, "") ||productoInput.nombre==null||productoInput.descripcion==""||productoInput.descripcion==null||productoInput.categoria==""||productoInput.categoria==null||productoInput.precio==0||productoInput.cantidadDisponible==0){
             throw new RuntimeException("No puede ser vacio");
         }
         producto.setNombre(productoInput.nombre());
         producto.setDescripcion(productoInput.descripcion());
         producto.setCategoria(productoInput.categoria());
+        producto.setProductoVendidos(productosVendidosActuales);
         producto.setprecio(productoInput.precio());
         producto.setCantidadDisponible(productoInput.cantidadDisponible());
         return productoRepository.save(producto);

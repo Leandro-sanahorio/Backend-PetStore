@@ -7,6 +7,10 @@ type Query{
     venta(id: ID!):Venta
     usuarios:[Usuario!]!
     usuario(id: ID!):Usuario
+    ventasDeHoy: [Venta!]!
+    ventasUltimaSemana: [Venta!]!
+    ventasUltimoMes: [Venta!]!
+    topProductoMasVendidos: [Producto!]!
 }
 
 type Mutation{

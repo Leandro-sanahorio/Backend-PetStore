@@ -39,26 +39,18 @@ public class UsuarioResolver {
 
     public record UsuarioInput(String contrasenia, String nombreusuario,Integer rol) {}
 
-
-
-
-
     @MutationMapping(name = "insertarUsuario")
     public Usuario insertarUsuario(@Argument UsuarioInput usuarioInput) {
-
-
+        if (usuarioRepository.findByNombreusuario(usuarioInput.nombreusuario()).isPresent()) {
+            throw new RuntimeException("El nombre de usuario ya está en uso");
+        }
         Rol rol = rolRepository.findById(usuarioInput.rol()).orElseThrow(() -> new RuntimeException("Rol no encontrado"));
         Usuario usuario = new Usuario();
         usuario.setRol(rol);
         usuario.setContrasenia(passwordEncryptor.encrypt(usuarioInput.contrasenia()));
         usuario.setNombreusuario(usuarioInput.nombreusuario());
         return usuarioRepository.save(usuario);
-
-
     }
-
-
-
 
     @MutationMapping
     public Boolean deleteUsuario(@Argument Long id) {

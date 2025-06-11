@@ -8,4 +8,5 @@ import java.util.Optional;
 @GraphQlRepository
     public interface UsuarioRepository extends JpaRepository<Usuario,Long>, QueryByExampleExecutor<Usuario> {
         Optional<Usuario> findByNombreusuario(String nombreusuario);
+
     }

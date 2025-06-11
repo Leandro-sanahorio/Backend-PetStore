@@ -37,25 +37,23 @@ public class CompraResolver {
     @MutationMapping(name = "insertarCompra")
     @PreAuthorize("hasRole('ADMIN')")
     public Compra insertarCompra(@Argument CompraInput compraInput) {
+        Producto producto = productoRepository.findById(compraInput.producto())
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
 
-        Producto producto = productoRepository.findById(compraInput.producto()).orElseThrow(() -> new RuntimeException("Producto no encontrado"));
         if (compraInput.cantidadProductosCompra() <= 0) {
             throw new RuntimeException("La cantidad de productos comprados debe ser mayor a cero");
         }
+        producto.setCantidadDisponible(producto.getCantidadDisponible() + compraInput.cantidadProductosCompra());
+        productoRepository.save(producto);
         Compra compra = new Compra();
         compra.setCantidadProductosCompra(compraInput.cantidadProductosCompra());
         compra.setProducto(producto);
-        producto.setCantidadDisponible(producto.getCantidadDisponible() + compraInput.cantidadProductosCompra());
         return compraRepository.save(compra);
-
-
-
     }
 
     @MutationMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public Compra updateCompra(@Argument Long id, @Argument CompraInput compraInput) {
-        Compra compra = compraRepository.findById(id).orElseThrow(() -> new RuntimeException("Compra no encontrada"));
+    public Compra updateCompra(@Argument Long id, @Argument CompraInput compraInput) {Compra compra = compraRepository.findById(id).orElseThrow(() -> new RuntimeException("Compra no encontrada"));
         Producto productoAnterior = compra.getProducto();
         int cantidadAnterior = compra.getCantidadProductosCompra();
         Producto nuevoProducto = productoRepository.findById(compraInput.producto()).orElseThrow(() -> new RuntimeException("Producto no encontrado"));
@@ -63,7 +61,9 @@ public class CompraResolver {
             throw new RuntimeException("La cantidad debe ser mayor a cero");
         }
         productoAnterior.setCantidadDisponible(productoAnterior.getCantidadDisponible() - cantidadAnterior);
+        productoRepository.save(productoAnterior);
         nuevoProducto.setCantidadDisponible(nuevoProducto.getCantidadDisponible() + compraInput.cantidadProductosCompra());
+        productoRepository.save(nuevoProducto);
         compra.setProducto(nuevoProducto);
         compra.setCantidadProductosCompra(compraInput.cantidadProductosCompra());
         return compraRepository.save(compra);
