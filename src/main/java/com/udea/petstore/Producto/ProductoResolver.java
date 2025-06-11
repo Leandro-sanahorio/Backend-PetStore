@@ -40,9 +40,6 @@ public class ProductoResolver {
     @MutationMapping(name = "insertarProducto")
     @PreAuthorize("hasRole('ADMIN')")
     public Producto insertarProducto(@Argument ProductoInput productoInput) {
-        if(Objects.equals(productoInput.nombre, "") ||productoInput.nombre==null||productoInput.descripcion==""||productoInput.descripcion==null||productoInput.categoria==""||productoInput.categoria==null||productoInput.precio==0||productoInput.cantidadDisponible==0){
-            throw new RuntimeException("No puede ser vacio");
-        }
         Producto producto = new Producto();
         producto.setNombre(productoInput.nombre);
         producto.setDescripcion(productoInput.descripcion);
@@ -69,9 +66,6 @@ public class ProductoResolver {
     public Producto updateProducto(@Argument Long id, @Argument ProductoInput productoInput) {
         Producto producto = productoRepository.findById(id).orElseThrow(() -> new RuntimeException("Venta no encontrada"));
         int productosVendidosActuales = producto.getProductoVendidos();
-        if(Objects.equals(productoInput.nombre, "") ||productoInput.nombre==null||productoInput.descripcion==""||productoInput.descripcion==null||productoInput.categoria==""||productoInput.categoria==null||productoInput.precio==0||productoInput.cantidadDisponible==0){
-            throw new RuntimeException("No puede ser vacio");
-        }
         producto.setNombre(productoInput.nombre());
         producto.setDescripcion(productoInput.descripcion());
         producto.setCategoria(productoInput.categoria());
