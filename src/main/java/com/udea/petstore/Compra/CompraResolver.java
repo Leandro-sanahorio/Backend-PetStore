@@ -32,12 +32,13 @@ public class CompraResolver {
                 .orElseThrow(() -> new RuntimeException("Compra no encontrada"));
     }
 
-    public record CompraInput(int cantidadProductosCompra, Long idProducto) {}
+    public record CompraInput(Integer cantidadProductosCompra, Long producto) {}
 
     @MutationMapping(name = "insertarCompra")
     @PreAuthorize("hasRole('ADMIN')")
     public Compra insertarCompra(@Argument CompraInput compraInput) {
-        Producto producto = productoRepository.findById(compraInput.idProducto()).orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+        Producto producto = productoRepository.findById(compraInput.producto()).orElseThrow(() -> new RuntimeException("Producto no encontrado"));
         if (compraInput.cantidadProductosCompra() <= 0) {
             throw new RuntimeException("La cantidad de productos comprados debe ser mayor a cero");
         }
@@ -46,6 +47,9 @@ public class CompraResolver {
         compra.setProducto(producto);
         producto.setCantidadDisponible(producto.getCantidadDisponible() + compraInput.cantidadProductosCompra());
         return compraRepository.save(compra);
+
+
+
     }
 
     @MutationMapping
@@ -54,7 +58,7 @@ public class CompraResolver {
         Compra compra = compraRepository.findById(id).orElseThrow(() -> new RuntimeException("Compra no encontrada"));
         Producto productoAnterior = compra.getProducto();
         int cantidadAnterior = compra.getCantidadProductosCompra();
-        Producto nuevoProducto = productoRepository.findById(compraInput.idProducto()).orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+        Producto nuevoProducto = productoRepository.findById(compraInput.producto()).orElseThrow(() -> new RuntimeException("Producto no encontrado"));
         if (compraInput.cantidadProductosCompra() <= 0) {
             throw new RuntimeException("La cantidad debe ser mayor a cero");
         }

@@ -6,5 +6,5 @@ type Compra{
 
 input CompraInput{
     cantidadProductosCompra:Int!
-    productoId: Int!
+    producto: Int!
 }
