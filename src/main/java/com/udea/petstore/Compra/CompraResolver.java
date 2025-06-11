@@ -1,4 +1,6 @@
 package com.udea.petstore.Compra;
+import com.udea.petstore.Producto.Producto;
+import com.udea.petstore.Producto.ProductoRepository;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -10,9 +12,11 @@ import java.util.List;
 public class CompraResolver {
 
     private final CompraRepository compraRepository;
+    private final ProductoRepository productoRepository;
 
-    public CompraResolver(CompraRepository compraRepository) {
+    public CompraResolver(CompraRepository compraRepository, ProductoRepository productoRepository) {
         this.compraRepository = compraRepository;
+        this.productoRepository = productoRepository;
     }
 
     @QueryMapping
@@ -28,13 +32,35 @@ public class CompraResolver {
                 .orElseThrow(() -> new RuntimeException("Compra no encontrada"));
     }
 
-    public record CompraInput(String nombreproducto, int cantidadProductosCompra) {}
+    public record CompraInput(int cantidadProductosCompra, Long idProducto) {}
 
     @MutationMapping(name = "insertarCompra")
     @PreAuthorize("hasRole('ADMIN')")
     public Compra insertarCompra(@Argument CompraInput compraInput) {
+        Producto producto = productoRepository.findById(compraInput.idProducto()).orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+        if (compraInput.cantidadProductosCompra() <= 0) {
+            throw new RuntimeException("La cantidad de productos comprados debe ser mayor a cero");
+        }
         Compra compra = new Compra();
-        compra.setNombreProducto(compraInput.nombreproducto());
+        compra.setCantidadProductosCompra(compraInput.cantidadProductosCompra());
+        compra.setProducto(producto);
+        producto.setCantidadDisponible(producto.getCantidadDisponible() + compraInput.cantidadProductosCompra());
+        return compraRepository.save(compra);
+    }
+
+    @MutationMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public Compra updateCompra(@Argument Long id, @Argument CompraInput compraInput) {
+        Compra compra = compraRepository.findById(id).orElseThrow(() -> new RuntimeException("Compra no encontrada"));
+        Producto productoAnterior = compra.getProducto();
+        int cantidadAnterior = compra.getCantidadProductosCompra();
+        Producto nuevoProducto = productoRepository.findById(compraInput.idProducto()).orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+        if (compraInput.cantidadProductosCompra() <= 0) {
+            throw new RuntimeException("La cantidad debe ser mayor a cero");
+        }
+        productoAnterior.setCantidadDisponible(productoAnterior.getCantidadDisponible() - cantidadAnterior);
+        nuevoProducto.setCantidadDisponible(nuevoProducto.getCantidadDisponible() + compraInput.cantidadProductosCompra());
+        compra.setProducto(nuevoProducto);
         compra.setCantidadProductosCompra(compraInput.cantidadProductosCompra());
         return compraRepository.save(compra);
     }
@@ -42,16 +68,10 @@ public class CompraResolver {
     @MutationMapping
     @PreAuthorize("hasRole('ADMIN')")
     public Boolean deleteCompra(@Argument Long id) {
+        if (!compraRepository.existsById(id)) {
+            throw new RuntimeException("Producto no encontrado");
+        }
         compraRepository.deleteById(id);
         return true;
-    }
-
-    @MutationMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public Compra updateCompra(@Argument Long id, @Argument CompraInput compraInput) {
-        Compra compra = compraRepository.findById(id).orElseThrow(() -> new RuntimeException("Venta no encontrada"));
-        compra.setNombreProducto(compraInput.nombreproducto());
-        compra.setCantidadProductosCompra(compraInput.cantidadProductosCompra());
-        return compraRepository.save(compra);
     }
 }

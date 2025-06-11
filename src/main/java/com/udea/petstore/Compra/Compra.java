@@ -1,7 +1,6 @@
 package com.udea.petstore.Compra;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import com.udea.petstore.Producto.Producto;
+import jakarta.persistence.*;
 
 @Entity
 public class Compra {
@@ -9,15 +8,28 @@ public class Compra {
     @Id
     @GeneratedValue
     private Long id;
-    private String nombreproducto;
+
     private int cantidadProductosCompra;
+
+    @ManyToOne
+    @JoinColumn(name = "producto_id", nullable = false)
+    private Producto producto;
 
     public Compra() {
     }
 
-    public Compra(String nombreproducto, int cantidadProductosCompra) {
-        this.nombreproducto = nombreproducto;
+    public Compra(Long id, int cantidadProductosCompra, Producto producto) {
+        this.id = id;
         this.cantidadProductosCompra = cantidadProductosCompra;
+        this.producto = producto;
+    }
+
+    public Producto getProducto() {
+        return producto;
+    }
+
+    public void setProducto(Producto producto) {
+        this.producto = producto;
     }
 
     public Long getId() {
@@ -28,13 +40,6 @@ public class Compra {
         this.id = id;
     }
 
-    public String getNombreProducto() {
-        return nombreproducto;
-    }
-
-    public void setNombreProducto(String nombreProducto) {
-        this.nombreproducto = nombreProducto;
-    }
 
     public int getCantidadProductosCompra() {
         return cantidadProductosCompra;
@@ -48,8 +53,8 @@ public class Compra {
     public String toString() {
         return "Compra{" +
                 "id=" + id +
-                ", nombreproducto='" + nombreproducto + '\'' +
                 ", cantidadProductosCompra=" + cantidadProductosCompra +
+                ", producto=" + producto +
                 '}';
     }
 }

@@ -43,13 +43,6 @@ public class VentaResolver {
 
     @MutationMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public Boolean deleteVenta(@Argument Long id) {
-        ventaRepository.deleteById(id);
-        return true;
-    }
-
-    @MutationMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public Venta updateVenta(@Argument Long id, @Argument VentaInput ventaInput) {
         Venta venta = ventaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Venta no encontrada"));
@@ -60,5 +53,15 @@ public class VentaResolver {
         venta.setCantidadProductosVenta(ventaInput.cantidadProductosVenta());
 
         return ventaRepository.save(venta);
+    }
+
+    @MutationMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public Boolean deleteVenta(@Argument Long id) {
+        if (!ventaRepository.existsById(id)) {
+            throw new RuntimeException("Producto no encontrado");
+        }
+        ventaRepository.deleteById(id);
+        return true;
     }
 }
