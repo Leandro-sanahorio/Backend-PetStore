@@ -5,6 +5,7 @@ type Producto{
     categoria:String!
     precio:Float!
     cantidadDisponible:Int!
+    productoVendidos:Int!
 }
 
 input ProductoInput{

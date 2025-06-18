@@ -1,10 +1,10 @@
 type Compra{
     id:ID!
-    nombreproducto:String!
     cantidadProductosCompra:Int!
+    producto: Producto!
 }
 
 input CompraInput{
-    nombreproducto:String!
     cantidadProductosCompra:Int!
+    producto: Int!
 }
